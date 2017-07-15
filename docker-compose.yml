@@ -1,0 +1,163 @@
+version: "3.1"
+
+services:
+  redis:
+    build: 
+      context: ./redis
+    user: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ${DATA_SAVE_PATH}/redis:/data
+    networks:
+      - backend
+      # redis-cli -h redis -a z123456
+
+      
+  rcli:
+    image: redis:4-alpine
+    links:
+      - redis
+    networks:
+      - backend
+    command: redis-cli -h redis -a z123456
+
+### MySQL Container #########################################
+
+  mysql:
+    build:
+      context: ./mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${WORKSPACE_TIMEZONE}
+    volumes:
+      - ${DATA_SAVE_PATH}/mysql:/var/lib/mysql
+      - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - backend
+
+  mongo:
+    # build: 
+    #   context: ./mongo
+    image: mvertes/alpine-mongo
+    links:
+      - redis
+    networks:
+      - backend
+    ports:
+      - "27017:27017"
+      - "28017:28017"
+    volumes:
+      - ${DATA_SAVE_PATH}/mongo:/data/db
+
+  php:
+    build:
+      context: ./php
+    # volumes_from:
+    #   - applications
+    volumes:
+      - ./php/php_append.ini:/usr/local/etc/php/php_append.ini
+    expose:
+      - "9000"
+    tty: true
+    extra_hosts:
+      - "dockerhost:${DOCKER_HOST_IP}"
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+    networks:
+      - backend
+
+# ### PHP Worker Container #####################################
+
+#     php-worker:
+#       build:
+#         context: ./php-worker
+#       volumes_from:
+#         - applications
+#       depends_on:
+#         - workspace
+#       extra_hosts:
+#         - "dockerhost:${DOCKER_HOST_IP}"
+#       networks:
+#         - backend
+
+### Nginx Server Container ##################################
+
+    # nginx:
+    #   build:
+    #     context: ./nginx
+    #     args:
+    #       - PHP_UPSTREAM=php-fpm
+    #   volumes_from:
+    #     - applications
+    #   volumes:
+    #     - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
+    #     - ${NGINX_SITES_PATH}:/etc/nginx/sites-available
+    #   ports:
+    #     - "${NGINX_HOST_HTTP_PORT}:80"
+    #     - "${NGINX_HOST_HTTPS_PORT}:443"
+    #   depends_on:
+    #     - php-fpm
+    #   networks:
+    #     - frontend
+    #     - backend
+
+networks:
+  backend:
+    driver: "bridge"
+
+#   reverse_proxy:
+#     build: ./reverse_proxy
+#     user: nginx
+
+#   database:
+#     build: 
+#        context: ./database
+#     image: atsea_db
+#     user: postgres
+#     environment:
+#       POSTGRES_USER: gordonuser
+#       POSTGRES_DB_PASSWORD_FILE: /run/secrets/postgres_password
+#       POSTGRES_DB: atsea
+#     ports:
+#       - "5432:5432" 
+#     networks:
+#       - back-tier
+#     secrets:
+#       - postgres_password
+
+#   appserver:
+#     build:
+#        context: app
+#        dockerfile: Dockerfile
+#     image: atsea_app
+#     user: gordon
+#     ports:
+#       - "8080:8080" 
+#       - "5005:5005"
+#     networks:
+#       - front-tier
+#       - back-tier
+#     secrets:
+#       - postgres_password
+
+#   payment_gateway:
+#     build:
+#       context: payment_gateway
+#     networks:
+#       - payment
+#     secrets:
+#       - payment_token
+
+
+
+# secrets:
+#   postgres_password:
+#     file: ./devsecrets/postgres_password
+#   payment_token:
+#     file: ./devsecrets/payment_token
