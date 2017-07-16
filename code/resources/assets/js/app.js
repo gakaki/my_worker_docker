@@ -1,33 +1,23 @@
-import Vue from 'vue'
-import '@root/bootstrap'
-import { Form } from '@common/Form'
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * include Vue and Vue Resource. This gives a great starting point for
+ * building robust, powerful web applications using Vue and Laravel.
+ */
 
-window.Vue = require('vue')
+require('./bootstrap');
 
-// Vue Components
-Vue.component('form-alert', require('./components/FormAlert.vue'))
+/**
+ * Next, we will create a fresh Vue application instance and attach it to
+ * the body of the page. From here, you may begin adding components to
+ * the application, or feel free to tweak this setup for your needs.
+ */
 
-// Users Components
-Vue.component('user-create-form', require('./components/users/UserCreateForm.vue'))
-Vue.component('user-edit-form', require('./components/users/UserEditForm.vue'))
-Vue.component('user-show-form', require('./components/users/UserShowForm.vue'))
-Vue.component('user-lists', require('./components/users/UserLists.vue'))
+// Vue.component('example', require('./components/Example.vue'));
 
+require('./packages');
+require('./components');
+require('./routes');
 
-window.VueInstance = new Vue({
-  data: {
-    additional: {},
-    form: new Form(),
-    alert: {
-      show: false,
-    }
-  },
-  methods: {
-    onSubmit() {
-      this.$emit('formSubmitted')
-    },
-    onDelete(id) {
-      this.$emit('dataDeleted', id)
-    }
-  }
-}).$mount('#app')
+const app = new Vue({
+    el: '#app',
+});
