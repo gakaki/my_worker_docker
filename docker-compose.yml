@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.3"
 
 services:
   redis:
@@ -61,7 +61,8 @@ services:
     # volumes_from:
     #   - applications
     volumes:
-      - ./php/php_append.ini:/usr/local/etc/php/php_append.ini
+      - ./php/php_append.ini:/usr/local/etc/php/conf.d/php_append.ini
+      - ${APPLICATION}:/var/www/
     expose:
       - "9000"
     tty: true
@@ -70,6 +71,30 @@ services:
     environment:
       - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
     networks:
+      - backend
+
+## Nginx Server Container ##################################
+  openresty:
+    build:
+      context: ./openresty
+      #       args:
+      #         - PHP_UPSTREAM=php-fpm
+      #     volumes_from:
+      #       - applications
+    links:
+      - php:php
+    volumes:
+      - ${NGINX_HOST_LOG_PATH}:/usr/local/openresty/nginx/logs/
+      - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ${NGINX_SITES_PATH}:/usr/local/openresty/nginx/conf/vhosts
+      - ${APPLICATION}:/var/www/
+    ports:
+      - "${NGINX_HOST_HTTP_PORT}:80"
+      - "${NGINX_HOST_HTTPS_PORT}:443"
+    depends_on:
+      - php
+    networks:
+      - frontend
       - backend
 
 # ### PHP Worker Container #####################################
@@ -109,6 +134,8 @@ services:
 
 networks:
   backend:
+    driver: "bridge"
+  frontend:
     driver: "bridge"
 
 #   reverse_proxy:
