@@ -12,15 +12,13 @@ services:
     networks:
       - backend
       # redis-cli -h redis -a z123456
-
-      
-  rcli:
-    image: redis:4-alpine
-    links:
-      - redis
-    networks:
-      - backend
-    command: redis-cli -h redis -a z123456
+#  rcli:
+#    image: redis:4-alpine
+#    links:
+#      - redis
+#    networks:
+#      - backend
+#    command: redis-cli -h redis -a z123456
 
 ### MySQL Container #########################################
 
@@ -45,8 +43,6 @@ services:
     # build: 
     #   context: ./mongo
     image: mvertes/alpine-mongo
-    links:
-      - redis
     networks:
       - backend
     ports:
@@ -56,6 +52,7 @@ services:
       - ${DATA_SAVE_PATH}/mongo:/data/db
 
   php:
+    image: gakaki/php
     build:
       context: ./php
     # volumes_from:
