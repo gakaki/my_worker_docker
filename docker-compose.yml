@@ -9,6 +9,8 @@ services:
       - "${REDIS_PORT}:6379"
     volumes:
       - ${DATA_SAVE_PATH}/redis:/data
+    links:
+      - php:php
     networks:
       - backend
       # redis-cli -h redis -a z123456
@@ -36,6 +38,8 @@ services:
       - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
     ports:
       - "${MYSQL_PORT}:3306"
+    links:
+      - php:php
     networks:
       - backend
 
