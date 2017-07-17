@@ -6,7 +6,7 @@ services:
       context: ./redis
     user: redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     volumes:
       - ${DATA_SAVE_PATH}/redis:/data
     networks:
