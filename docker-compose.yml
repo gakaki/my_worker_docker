@@ -71,6 +71,19 @@ services:
     networks:
       - backend
 
+
+### Jetbrain idea license Container #########################################
+
+  idea:
+    image: dominate/idea-license-server
+    environment:
+      - USER="$USER"
+    ports:
+      - 1017:1017
+    networks:
+      - backend
+
+
 ### MySQL Container #########################################
 
   mysql:
@@ -99,6 +112,8 @@ services:
     image: mvertes/alpine-mongo
     networks:
       - backend
+    links:
+      - php:php
     ports:
       - "27017:27017"
       - "28017:28017"
@@ -107,8 +122,8 @@ services:
 
   php:
     image: gakaki/php
-    build:
-      context: ./php
+#    build:
+ #     context: ./php
     # volumes_from:
     #   - applications
     volumes:
