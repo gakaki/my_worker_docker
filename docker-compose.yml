@@ -1,9 +1,20 @@
 version: "3.3"
 
-
 services:
+
+  influxdb:
+    image: influxdb:alpine
+    ports:
+      - "${INFLUXDB_PORT}:8086"
+    volumes:
+      - ${DATA_SAVE_PATH}/influxdb:/var/lib/influxdb
+    links:
+      - php:php
+    networks:
+      - backend
+
   redis:
-    build: 
+    build:
       context: ./redis
     user: redis
     ports:
