@@ -74,14 +74,14 @@ services:
 
 ### Jetbrain idea license Container #########################################
 
-  idea:
-    image: dominate/idea-license-server
-    environment:
-      - USER="$USER"
-    ports:
-      - 1017:1017
-    networks:
-      - backend
+#  idea:
+#    image: dominate/idea-license-server
+#    environment:
+#      - USER="$USER"
+#    ports:
+#      - 1017:1017
+#    networks:
+#      - backend
 
 
 ### MySQL Container #########################################
