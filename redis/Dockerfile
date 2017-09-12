@@ -1,4 +1,4 @@
-FROM redis:4-alpine AS redis
+FROM redis:4-alpine
 
 RUN echo "never > /sys/kernel/mm/transparent_hugepage/enabled" >> /etc/rc.local \
 && echo "sysctl -w net.core.somaxconn=65535" >> /etc/rc.local
