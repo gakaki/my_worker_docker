@@ -25,51 +25,51 @@ services:
 
 ### Elasticsearch Container #########################################
 
-  elasticsearch1:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
-    container_name: elasticsearch
-    environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - ${DATA_SAVE_PATH}/esdata1:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-    networks:
-      - backend
-    deploy:
-      resources:
-        limits:
-          memory: 1g
-        reservations:
-          memory: 20M
+  # elasticsearch1:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
+  #   container_name: elasticsearch
+  #   environment:
+  #     - cluster.name=docker-cluster
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - ${DATA_SAVE_PATH}/esdata1:/usr/share/elasticsearch/data
+  #   ports:
+  #     - 9200:9200
+  #   networks:
+  #     - backend
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 1g
+  #       reservations:
+  #         memory: 20M
 
-  elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
-    environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.zen.ping.unicast.hosts=elasticsearch1"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    deploy:
-      resources:
-        limits:
-          memory: 1g
-        reservations:
-          memory: 20M
-    volumes:
-      - ${DATA_SAVE_PATH}/esdata2:/usr/share/elasticsearch/data
-    networks:
-      - backend
+  # elasticsearch2:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
+  #   environment:
+  #     - cluster.name=docker-cluster
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #     - "discovery.zen.ping.unicast.hosts=elasticsearch1"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 1g
+  #       reservations:
+  #         memory: 20M
+  #   volumes:
+  #     - ${DATA_SAVE_PATH}/esdata2:/usr/share/elasticsearch/data
+  #   networks:
+  #     - backend
 
 
 ### Jetbrain idea license Container #########################################
