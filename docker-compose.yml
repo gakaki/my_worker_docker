@@ -6,6 +6,8 @@ services:
     image: influxdb:alpine
     ports:
       - "${INFLUXDB_PORT}:8086"
+      - "${INFLUXDB_WEB_UI_PORT}:8083"
+      - "${INFLUXDB_GRAPHITE_PORT}:2003"
     volumes:
       - ${DATA_SAVE_PATH}/influxdb:/var/lib/influxdb
     links:
