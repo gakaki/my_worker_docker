@@ -147,6 +147,8 @@ services:
     volumes:
       - ./php/php_append.ini:/usr/local/etc/php/conf.d/php_append.ini
       - ${APPLICATION}:/var/www/
+      - ./php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./php/php-fpm.conf:/usr/local/etc/php-fpm.conf
     expose:
       - "9000"
     tty: true
