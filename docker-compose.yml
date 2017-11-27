@@ -14,6 +14,8 @@ services:
 #      - INFLUXDB_DATA_QUERY_LOG_ENABLED=true
 #    volumes:
 #      - ${DATA_SAVE_PATH}/influxdb:/var/lib/influxdb
+    links:
+      - php:php
     networks:
       - backend
 
@@ -168,9 +170,9 @@ services:
       - ${DATA_SAVE_PATH}/mongo:/data/db
 
   php:
-    image: gakaki/php
-#    build:
- #     context: ./php
+    #image: gakaki/php
+    build:
+     context: ./php
     # volumes_from:
     #   - applications
     volumes:
