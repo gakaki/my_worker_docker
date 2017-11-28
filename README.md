@@ -28,3 +28,5 @@ docker run -p 80:80 gc/python:devel
 ## 如何提交到私有仓库
 docker tag 
 docker push
+
+## git submodule 如何获取
