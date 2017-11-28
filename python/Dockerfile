@@ -4,6 +4,7 @@ LABEL maintainer "Go-Capture gakaki <gakaki@qq.com>"
 
 # 前置步骤
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+# ENV LC_ALL=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
 ENV PATH /opt/conda/bin:$PATH
 WORKDIR /root/
 

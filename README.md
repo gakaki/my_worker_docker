@@ -24,3 +24,7 @@ docker images gc/python
 ## Docker 删除无用的None镜像
 docker run -it gc/python:devel /bin/bash
 docker run -p 80:80 gc/python:devel
+
+## 如何提交到私有仓库
+docker tag 
+docker push
