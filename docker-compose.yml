@@ -1,10 +1,14 @@
 version: "3.3"
 
 services:
-
+  
   python:
-    #build: .
-    image: gc/python:latest
+    build: .
+    #image: gc/python:latest
+    expose:
+      - "9999"
+    links:
+      - php:php
     ports:
       - "9999:9999"
 #    environment:
@@ -49,18 +53,18 @@ services:
     networks:
       - backend
 
-  redis:
-    build:
-      context: ./redis
-    user: redis
-    ports:
-      - "${REDIS_PORT}:6379"
-    volumes:
-      - ${DATA_SAVE_PATH}/redis:/data
-    links:
-      - php:php
-    networks:
-      - backend
+  # redis:
+  #   build:
+  #     context: ./redis
+  #   user: redis
+  #   ports:
+  #     - "${REDIS_PORT}:6379"
+  #   volumes:
+  #     - ${DATA_SAVE_PATH}/redis:/data
+  #   links:
+  #     - php:php
+  #   networks:
+  #     - backend
       # redis-cli -h redis -a z123456
 #  rcli:
 #    image: redis:4-alpine
@@ -133,39 +137,39 @@ services:
 
 ### MySQL Container #########################################
 
-  mysql:
-    build:
-      context: ./mysql
-    environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - TZ=${WORKSPACE_TIMEZONE}
-    volumes:
-      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ${DATA_SAVE_PATH}/mysql:/var/lib/mysql
-      - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
-    ports:
-      - "${MYSQL_PORT}:3306"
-    links:
-      - php:php
-    networks:
-      - backend
+  # mysql:
+  #   build:
+  #     context: ./mysql
+  #   environment:
+  #     - MYSQL_DATABASE=${MYSQL_DATABASE}
+  #     - MYSQL_USER=${MYSQL_USER}
+  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - TZ=${WORKSPACE_TIMEZONE}
+  #   volumes:
+  #     - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+  #     - ${DATA_SAVE_PATH}/mysql:/var/lib/mysql
+  #     - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+  #   ports:
+  #     - "${MYSQL_PORT}:3306"
+  #   links:
+  #     - php:php
+  #   networks:
+  #     - backend
 
-  mongo:
- #   build: 
- #     context: ./mongo
-    image: mvertes/alpine-mongo
-    networks:
-      - backend
-    links:
-      - php:php
-    ports:
-      - "27017:27017"
-      - "28017:28017"
-    volumes:
-      - ${DATA_SAVE_PATH}/mongo:/data/db
+#   mongo:
+#  #   build: 
+#  #     context: ./mongo
+#     image: mvertes/alpine-mongo
+#     networks:
+#       - backend
+#     links:
+#       - php:php
+#     ports:
+#       - "27017:27017"
+#       - "28017:28017"
+#     volumes:
+#       - ${DATA_SAVE_PATH}/mongo:/data/db
 
   php:
     image: gakaki/php
@@ -204,8 +208,8 @@ services:
       - ${NGINX_SITES_PATH}:/usr/local/openresty/nginx/conf/vhosts
       - ${APPLICATION}:/var/www
     ports:
-      - "${NGINX_HOST_HTTP_PORT}:80"
-      - "${NGINX_HOST_HTTPS_PORT}:443"
+      - "${NGINX_HOST_HTTP_PORT}:81"
+      - "${NGINX_HOST_HTTPS_PORT}:1444"
     depends_on:
       - php
     networks:
