@@ -1,0 +1,8 @@
+[submodule "site/ev.gc.loc"]
+	path = site/ev.gc.loc
+	url = ssh://git@code.go-capture.com/source/company-inner-admin.git
+	branch = databank
+[submodule "site/rule.gc.loc"]
+	path = site/rule.gc.loc
+	url = ssh://git@code.go-capture.com/source/re.git
+	branch = master

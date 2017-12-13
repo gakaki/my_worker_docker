@@ -4,9 +4,11 @@ LABEL maintainer "Go-Capture gakaki <gakaki@qq.com>"
 
 # 前置步骤
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
-# ENV LC_ALL=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
 ENV PATH /opt/conda/bin:$PATH
 WORKDIR /root/
+
+# 替换为aliyun 的源头
+COPY apt_sources.list /etc/apt/sources.list
 
 # 使用镜像 安装anoconda https://github.com/ContinuumIO/docker-images/blob/master/anaconda3/Dockerfile
 # 清华大学 anoconda 镜像地址 https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/
@@ -59,7 +61,7 @@ COPY tensorflow-1.4.0-cp36-cp36m-linux_x86_64.whl /root/tensorflow-1.4.0-cp36-cp
 # https://github.com/mind/wheels/releases 复杂死了 还有针对aws这种的版本 我这里是本机笔记本还是generic 的cuda9吧
 RUN pip install /root/tensorflow-1.4.0-cp36-cp36m-linux_x86_64.whl
 
-COPY . /root/
+#COPY . /root/
 # 暴露flask端口
 EXPOSE 9999
 # 运行flask
