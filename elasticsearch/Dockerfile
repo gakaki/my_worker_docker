@@ -1,4 +1,13 @@
-FROM php:7.2.0RC6-fpm-alpine3.6
+FROM docker.elastic.co/elasticsearch/elasticsearch:6.0.1
+
+COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsearch/config/
+
+# 注意在国外速度超慢
+# https://github.com/elastic/elasticsearch-docker
+# elastic search 官方dockerfile地址
+
+
+# 安装 elasticsearch ik 插件
 
 MAINTAINER gakaki <gakaki@qq.com>
 

@@ -1,28 +1,95 @@
 version: "3.3"
 
+volumes:
+  nvidia_driver:
+    external: true
+
 services:
-  
-  python:
+#  testcuda:
+#    image: nvidia/cuda
+#    volumes:
+#      - nvidia_driver:/usr/local/nvidia:ro
+#    devices:
+#      - /dev/nvidia0:/dev/nvidia0
+#      - /dev/nvidiactl:/dev/nvidiactl
+#      - /dev/nvidia-uvm:/dev/nvidia-uvm
+#    command: nvidia-smi
+#   mongodb:
+#  #   build:
+#  #     context: ./mongodb
+#     image: mvertes/alpine-mongo
+#     networks:
+#       - backend
+#     links:
+#       - php:php
+#     ports:
+#       - "27017:27017"
+#       - "28017:28017"
+#     volumes:
+#       - ${DATA_SAVE_PATH}/mongodb:/data/db
+
+  mongodb:
     build:
-      context: ./python
+      context: ./mongodb
     #image: gc/python:latest
     expose:
+      - "27017"
+    ports:
+      - "27020:27017"
+      - "28020:28017"
+    volumes:
+      - ${DATA_SAVE_PATH}/mongodb:/data/
+#    environment:
+#      - INFLUXDB_GRAPHITE_ENABLED=true
+    links:
+      - php:php
+    networks:
+      - backend
+
+
+  pythoncpu:
+    build:
+      context: ./pythoncpu
+    expose:
       - "9999"
+      - "8888"
     links:
       - php:php
     ports:
       - "9999:9999"
+      - "8888:8888"
 #    environment:
 #      - INFLUXDB_GRAPHITE_ENABLED=true
-#      - INFLUXDB_ADMIN_ENABLED=true
-#      - INFLUXDB_REPORTING_DISABLED=false
-#      - INFLUXDB_DATA_QUERY_LOG_ENABLED=true
     volumes:
       - ./python:/root
     links:
       - php:php
     networks:
       - backend
+
+#  python:
+#    build:
+#      context: ./python
+#    #image: gc/python:latest
+#    expose:
+#      - "9999"
+#      - "8888"
+#    links:
+#      - php:php
+#    ports:
+#      - "9999:9999"
+#      - "8888:8888"
+##    environment:
+##      - INFLUXDB_GRAPHITE_ENABLED=true
+##      - INFLUXDB_ADMIN_ENABLED=true
+##      - INFLUXDB_REPORTING_DISABLED=false
+##      - INFLUXDB_DATA_QUERY_LOG_ENABLED=true
+#    volumes:
+#      - ./python:/root
+#    links:
+#      - php:php
+#    networks:
+#      - backend
 
   registry:
     image: registry:latest
@@ -57,8 +124,9 @@ services:
       - backend
 
 ## problem where is the esata2 and estat1 file location
-## nano /etc/bash.bashrc  ubuntu sysctl -w vm.max_map_count=262144 otherwise error
-## curl http://127.0.0.1:9200/_cat/health           1472225929 15:38:49 docker-cluster green 2 2 4 2 0 0 0 0 - 100.0%
+# nano /etc/bash.bashrc  ubuntu sysctl -w vm.max_map_count=262144 otherwise error
+# curl http://192.168.2.126:9200
+## curl http://192.168.2.126:9200/_cat/health           1472225929 15:38:49 docker-cluster green 2 2 4 2 0 0 0 0 - 100.0%
 ## notes https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
 ## notes the production config
 ## elasticsearch master slave mode
@@ -221,19 +289,7 @@ services:
   #   networks:
   #     - backend
 
-#   mongo:
-#  #   build: 
-#  #     context: ./mongo
-#     image: mvertes/alpine-mongo
-#     networks:
-#       - backend
-#     links:
-#       - php:php
-#     ports:
-#       - "27017:27017"
-#       - "28017:28017"
-#     volumes:
-#       - ${DATA_SAVE_PATH}/mongo:/data/db
+
 
   php:
     #image: gakaki/php

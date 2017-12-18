@@ -1,5 +1,9 @@
 ## README
+## 需要做的事情
 
+    JAVA BASE IMAGE
+    PYTHON BASE GPU IMAGE
+    
 
     
     cli_data_sales_num.py       cli   假数据测试

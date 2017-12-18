@@ -1,14 +1,15 @@
-# Nvidia Docker 镜像 https://hub.docker.com/r/nvidia/cuda/
-FROM nvidia/cuda:9.0-cudnn7-runtime
+FROM debian:jessie-slim
+# 号称60m的debian 版本
+# 抄袭这里 https://github.com/radiantwf/mongo
+# https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-debian/
 LABEL maintainer "Go-Capture gakaki <gakaki@qq.com>"
-
 # 前置步骤
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV PATH /opt/conda/bin:$PATH
 WORKDIR /root/
 
-# 替换为aliyun 的源头
-COPY apt_sources.list /etc/apt/sources.list
+# 替换为163.debian 的源头
+ADD ./debian_jessie.sources.list /etc/apt/sources.list
 
 # 使用镜像 安装anoconda https://github.com/ContinuumIO/docker-images/blob/master/anaconda3/Dockerfile
 # 清华大学 anoconda 镜像地址 https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/
@@ -44,6 +45,13 @@ conda config --set show_channel_urls yes
 #COPY pip.conf ~/.pip/pip.conf
 RUN mkdir -p  ~/.pip/ &&  echo "[global]\nindex-url = https://pypi.tuna.tsinghua.edu.cn/simple" > ~/.pip/pip.conf
 
+# copy 本地文件去镜像里
+COPY tensorflow-1.4.1-cp36-cp36m-linux_x86_64.whl /root/tensorflow.whl
+
+# 安装 tensorflow同时支持 gpu加速 和 cpu sse 加速的版本
+# https://github.com/mind/wheels/releases 复杂死了 还有针对aws这种的版本 我这里是本机笔记本还是generic 的cuda9吧
+RUN pip install /root/tensorflow.whl
+
 #COPY requirements.txt /root/requirements.txt
 # 安装本地requirments的包 juputer pandas之类
 # 醉了 跑 RUN conda update anaconda 会死机 奇怪
@@ -54,19 +62,10 @@ numpy requests ujson jupyter pandas
 # 安装pytorch 不知道requirments怎么装
 #RUN conda install pytorch=0.1.12 cuda80 -c soumith
 
-# copy 本地文件去镜像里
-COPY tensorflow-1.4.1-cp36-cp36m-linux_x86_64_gpu.whl /root/tensorflow.whl
 
-# 安装 tensorflow同时支持 gpu加速 和 cpu sse 加速的版本
-# https://github.com/mind/wheels/releases 复杂死了 还有针对aws这种的版本 我这里是本机笔记本还是generic 的cuda9吧
-RUN pip install /root/tensorflow.whl
 
-#COPY . /root/
-# 暴露flask端口
-EXPOSE 9999
-# 运行flask
-#ENTRYPOINT [ "/usr/bin/tini", "--" ]
-CMD [ "python","flask_data_sales_num.py" ]
+EXPOSE 8888
+CMD "jupyter-notebook --ip 0.0.0.0 --port 8888 --allow-root"
 
 # docker build -t="gc/python:latest" .
 # docker run -it gc/python:latest /bin/bash
